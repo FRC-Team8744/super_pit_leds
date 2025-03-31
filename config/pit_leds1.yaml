@@ -1,0 +1,20 @@
+# This defines the Pit 1 LEDs
+
+# These are packages that define how to setup the device
+# https://esphome.io/components/packages.html
+packages:
+  # This brings in global variables
+  subs: !include
+    file: substitutions.yaml
+  # This configures the LEDS for Pit 1
+  super_pit_leds: !include 
+    file: super_pit_leds.yaml
+    vars:
+      name: "super-pit-leds1"
+      friendly_name: "super pit leds 1"
+      board: nodemcu-32s
+      team_number: ${team_number}
+      team_color_rgb: ${team_color_rgb}
+      led_type: ${led_type}
+      led_count: ${led_count}
+      led_order: ${led_order}

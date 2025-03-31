@@ -1,0 +1,51 @@
+# This is a template package that defines all the helper scripts to work with the LED Strips
+# This was broken out more for grouping reasons that reusablility
+# https://esphome.io/components/packages.html
+
+# vars
+# id - The id of the strip
+# variant - The type of LED in the strip Example WS2811
+# pin - The pin that will be used to drive the LED Strip
+# num_leds - The number of LEDS on the strip
+# type - This is the order sequence of the LED Strip Example RGB
+
+# This is where global variables are defined for this template
+# https://esphome.io/components/globals.html
+globals:
+  - id: postion${id}
+    type: int
+    initial_value: '0'
+  - id: direction${id}
+    type: int
+    initial_value: '1'
+
+# This is where the Light Strip is defined
+# https://esphome.io/components/light/
+light:
+  # https://esphome.io/components/light/neopixelbus
+  - id: ${id}
+    platform: neopixelbus
+    variant: ${variant}
+    pin: ${pin}
+    num_leds: ${num_leds}
+    type: ${type}
+    color_correct: [100%, 58.61%, 41.18%]
+    effects:
+      - !include
+        file: color_bounce.yaml
+        vars:
+          name: "Blue"
+          postion_id: postion${id}
+          direction_id: direction${id}
+          red: 0
+          green: 0
+          blue: 255
+      - !include
+        file: color_bounce.yaml
+        vars:
+          name: "Red"
+          postion_id: postion${id}
+          direction_id: direction${id}
+          red: 255
+          green: 0
+          blue: 0

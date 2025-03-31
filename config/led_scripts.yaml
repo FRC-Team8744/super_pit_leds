@@ -1,0 +1,103 @@
+# This is a template package that defines all the helper scripts to work with the LED Strips
+# This was broken out more for grouping reasons that reusablility
+# https://esphome.io/components/packages.html
+
+# vars
+# team_number - the number of the team
+# team_color_rgb = the RGB color values for the team
+
+# These are scripts to help simplifly managing the LED Strips
+#  https://esphome.io/components/script.html
+script:
+  # This script sets the color of the of a single LED Strip
+  - id: "color_set"
+    parameters:
+      leds: 'light::LightState*'
+      rgbb: int[]
+      effect: string
+      led_off: bool
+    then:
+      - lambda: |-
+          if(led_off) {
+            auto call = leds->turn_off();
+            call.perform();
+          } else {
+             auto call = leds->turn_on();
+            if(rgbb[0] >= 0 && rgbb[0] <= 255) {
+              call.set_red(((float)rgbb[0])/255.0);
+            }
+            if(rgbb[1] >= 0 && rgbb[1] <= 255) {
+              call.set_green(((float)rgbb[1])/255.0);
+            }
+            if(rgbb[2] >= 0 && rgbb[2] <= 255) {
+              call.set_blue(((float)rgbb[2])/255.0);
+            }
+            if(rgbb[3] >= 0 && rgbb[3] <= 255) {
+              call.set_brightness(((float)rgbb[3])/255.0);
+            }
+            if(effect != "") {
+              call.set_effect(effect);
+            } else {
+              call.set_transition_length(300);
+            }
+            call.perform();
+          }
+  # This script sets the color of all the LED Strips
+  - id: "color_sets"
+    parameters:
+      rgbb: int[]
+      effect: string
+      led_off: bool
+    then:
+      - script.execute:
+          id: color_set
+          leds: !lambda return id(Pit_Upper);
+          rgbb: !lambda return rgbb;
+          effect: !lambda return effect;
+          led_off: !lambda return led_off;
+      - script.execute:
+          id: color_set
+          leds: !lambda return id(Pit_Lower);
+          rgbb: !lambda return rgbb;
+          effect: !lambda return effect;
+          led_off: !lambda return led_off;
+  # This scripts sets all the LED Strips to the ${team_number} Blue
+  - id: "color_blue_${team_number}"
+    then:
+      - script.execute:
+          id: color_sets
+          rgbb: !lambda return {${team_color_rgb}, -1};
+          effect: "None"
+          led_off: false
+  # This script sets all the LED Strips to White
+  - id: "color_white"
+    then:
+      - script.execute:
+          id: color_sets
+          rgbb: !lambda return {255, 255, 255, -1};
+          effect: "None"
+          led_off: false
+  # This script runs the blue alliance sequence
+  - id: "color_blue"
+    then:
+      - script.execute:
+          id: color_sets
+          rgbb: !lambda return {-1, -1, -1, -1};
+          effect: "Blue"
+          led_off: false
+  # This script runs the red alliance sequence
+  - id: "color_red"
+    then:
+      - script.execute:
+          id: color_sets
+          rgbb: !lambda return {-1, -1, -1, -1};
+          effect: "Red"
+          led_off: false
+  # This script turns off the both the LED Strips
+  - id: "color_off"
+    then:
+      - script.execute:
+          id: color_sets
+          rgbb: !lambda return {-1, -1, -1, -1};
+          effect: ""
+          led_off: true

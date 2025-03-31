@@ -1,0 +1,43 @@
+# This defines the Pit Control Web device
+
+# These are packages that define how to setup the device
+# https://esphome.io/components/packages.html
+packages:
+  # This brings in global variables
+  subs: !include
+    file: substitutions.yaml
+  # This sets up the basic configurstions for the device
+  base_device: !include
+    file: base_device.yaml
+    vars:
+      name: ${team_number}_pit_control_web
+      friendly_name: ${team_number} Pit Control Web
+      board: nodemcu-32s
+  # This sets up all of the web configurations
+  web_module: !include
+    file: web_module.yaml
+    vars:
+      ap_pass: !secret ap_pass
+      web_user: !secret web_user
+      web_pass: !secret web_pass
+      ota_pass: !secret ota_pass
+      team_number: ${team_number}
+      default_event_id: ${default_event_id}
+      default_nexus_api_key: !secret default_nexus_api_key
+      red_off: 'id(red).turn_off();'
+      blue_off: 'id(blue).turn_off();'
+      red_on: 'id(red).turn_on();'
+      blue_on: 'id(blue).turn_on();'
+
+# This defines the generic outputs to send to the  pit control device
+# https://esphome.io/components/output/
+output:
+  # https://esphome.io/components/output/gpio
+  # This is the pin that is used to execute the red alliance sequence
+  - platform: gpio
+    pin: GPIO15
+    id: red
+  # This is the pin that is used to execute the blue alliance sequence
+  - platform: gpio
+    pin: GPIO2
+    id: blue

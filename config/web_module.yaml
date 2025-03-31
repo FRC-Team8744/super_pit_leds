@@ -1,0 +1,79 @@
+# This template package defines the web communication and setup
+# https://esphome.io/components/packages.html
+
+# vars
+# ota_pass - defines the password needed for doing an OTA update
+# team_number - defines the team number
+# ap_pass - defines the password for connecting to the device when unable to connect to WIFI
+# web_id - defines the id of the web server component
+# web_user - defines the user to connect to the web server
+# web_pass - defines the password to connect to the web server
+# web_id - defines the id of the web server component
+# default_event_id - defines the nexus event key
+# default_nexus_api_key - defines the nexus api key
+# red_off - defines the code to execute to turn off red alliance sequence
+# blue_ioff - defines the code to execute to turn off blue alliance sequence
+# red_on - defines the code to execute to turn on the red alliance sequence
+# red_off - defines the code to execute to turn on the blue alliance sequence
+
+# These are packages that define how to setup the device
+# https://esphome.io/components/packages.html
+packages:
+  # This sets up the network configuration
+  network: !include
+    file: network.yaml
+    vars:
+      ota_pass: ${ota_pass}
+      ap_ssid: ${team_number}_Pit_Control
+      ap_pass: ${ap_pass}
+      web_user: ${web_user}
+      web_pass: ${web_pass}
+  # This sets up the nexus configuration
+  nexus: !include
+    file: nexus_web_link.yaml
+    vars:
+      default_event_id: ${default_event_id}
+      default_nexus_api_key: ${default_nexus_api_key}
+      red_off: ${red_off}
+      blue_off: ${blue_off}
+      red_on: ${red_on}
+      blue_on: ${blue_on}
+
+# This is used to setup 
+http_request:
+  verify_ssl: false
+
+web_server: 
+  id: web_config
+  sorting_groups:
+    - id: web_settings
+      name: "Settings"
+      sorting_weight: 10
+
+number:
+  - platform: template
+    id: team_number
+    max_value: '11000'
+    min_value: '1'
+    step: '1'
+    optimistic: True
+    restore_value: True
+    initial_value: '${team_number}'
+    web_server:
+      sorting_group_id: web_settings
+      sorting_weight: 100
+
+text:
+  - platform: template
+    id: team_number_text
+    optimistic: True
+    restore_value: True
+    initial_value: '${team_number}'
+    mode: text
+    web_server:
+      sorting_group_id: web_settings
+      sorting_weight: 50
+    on_value:
+      number.set:
+        id: team_number
+        value: !lambda return std::stof(x);

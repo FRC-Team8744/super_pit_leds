@@ -1,0 +1,40 @@
+# This is a template package that defines the network stack for connecting to both WIFI connection and hosting a page for configurations
+# https://esphome.io/components/packages.html
+
+# vars
+# ota_pass - defines the password needed for doing an OTA update
+# ap_ssid - defines the SSID for when unable to connect to WIFI
+# ap_pass - defines the password for connecting to the device when unable to connect to WIFI
+# web_id - defines the id of the web server component
+# web_user - defines the user to connect to the web server
+# web_pass - defines the password to connect to the web server
+
+# This defines updating the code Over The Air
+# https://esphome.io/components/ota/
+ota:
+  platform: esphome
+  password: ${ota_pass}
+
+# This defines how to connect to wifi or host an endpoint to setup wifi
+# https://esphome.io/components/wifi
+wifi:
+  reboot_timeout: 0s
+  ap:
+    ssid: ${ap_ssid}
+    password: ${ap_pass}
+
+# This is used to setup a page to setup wifi if not able to connect
+# https://esphome.io/components/captive_portal.html
+captive_portal:
+
+# This sets up a web server to configure different aspects of the web setup
+# https://esphome.io/components/web_server.html
+web_server:
+  id: ${web_id}
+  port: 80
+  version: 3
+  local: true
+  include_internal: True
+  auth: 
+    username: ${web_user}
+    password: ${web_pass}

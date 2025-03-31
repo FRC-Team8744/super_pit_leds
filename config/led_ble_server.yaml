@@ -1,0 +1,96 @@
+# This is a template package to define the bluetooth server options for lights
+# This was broken out more for grouping reasons that reusablility
+# https://esphome.io/components/packages.html
+
+# vars
+# team_number - the number of the team
+
+# This is required to run the esp32_ble_server
+# https://esphome.io/components/esp32_ble.html
+esp32_ble:
+
+# This defines the bluetooth server and what can be done with it
+# https://esphome.io/components/esp32_ble_server.html
+esp32_ble_server:
+  services:
+    - uuid: 2a24b789-7aab-4535-af3e-ee76a35cc42d
+      characteristics:
+        # This caracteristic set the red color for the LED Strips
+        - uuid: cad48e28-7fbe-41cf-bae9-d77a6c233423
+          id: "set_red"
+          write: true
+          on_write:
+            then:
+              - script.execute:
+                  id: color_sets
+                  rgbb: !lambda return {(int)x[0], -1, -1, -1};
+                  effect: ""
+                  led_off: false
+        # This caracteristic set the green color for the LED Strips
+        - uuid: cad48e28-7fbe-41cf-bae9-d77a6c233424
+          id: "set_green"
+          write: true
+          on_write:
+            then:
+              - script.execute:
+                  id: color_sets
+                  rgbb: !lambda return {-1, (int)x[0], -1, -1};
+                  effect: ""
+                  led_off: false
+        # This caracteristic set the blue color for the LED Strips
+        - uuid: cad48e28-7fbe-41cf-bae9-d77a6c233425
+          id: "set_blue"
+          write: true
+          on_write:
+            then:
+              - script.execute:
+                  id: color_sets
+                  rgbb: !lambda return {-1, -1, (int)x[0], -1};
+                  effect: ""
+                  led_off: false
+        # This caracteristic set the brightness for the LED Strips
+        - uuid: cad48e28-7fbe-41cf-bae9-d77a6c233426
+          id: "set_brightness"
+          write: true
+          on_write:
+            then:
+              - script.execute:
+                  id: color_sets
+                  rgbb: !lambda return {-1, -1, -1, (int)x[0]};
+                  effect: ""
+                  led_off: false
+        # This caracteristic turns off the LED Strips
+        - uuid: cad48e28-7fbe-41cf-bae9-d77a6c233427
+          id: "turn_off"
+          write: true
+          on_write:
+            then:
+              - script.execute: color_off
+        # This caracterisitc turns the LED Strips white
+        - uuid: cad48e28-7fbe-41cf-bae9-d77a6c233428
+          id: "white"
+          write: true
+          on_write:
+            then:
+              - script.execute: color_white
+        # This caracterisitc turns the LED Strips ${team_number} blue
+        - uuid: cad48e28-7fbe-41cf-bae9-d77a6c233429
+          id: "Blue_${team_number}"
+          write: true
+          on_write:
+            then:
+              - script.execute: color_blue_${team_number}
+        # This caracterisitc run the blue alliance sequence
+        - uuid: cad48e28-7fbe-41cf-bae9-d77a6c233430
+          id: "Blue"
+          write: true
+          on_write:
+            then:
+              - script.execute: color_blue
+        # This caracterisitc run the red alliance sequence
+        - uuid: cad48e28-7fbe-41cf-bae9-d77a6c233431
+          id: "Red"
+          write: true
+          on_write:
+            then:
+              - script.execute: color_red

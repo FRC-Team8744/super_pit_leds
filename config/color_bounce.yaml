@@ -1,0 +1,29 @@
+# this is a template light effect pattern that bounces a color with a width of 7 back and forth along the LED Strip
+# https://esphome.io/components/packages.html
+
+# vars
+# name - name to call the effect
+# position_id - id of the global INT variable to track position of the bounce on the LED STRIP
+# direction_id - id of the global INT variable to track the dirction the bounce on the LED sTRIP
+# red - the red value for the color from 0 to 255
+# green - the green value for the color from 0 to 255
+# blue - the blue value for the color from 0 to 255 
+
+# https://esphome.io/components/light/#addressable-lambda-effect
+addressable_lambda:
+  name: ${name}
+  update_interval: 100ms
+  lambda: |-
+    int position = id(${postion_id});
+    int direction = id(${direction_id});
+    if (position == it.size()) {
+      position = it.size() - 7;
+      direction = -1;
+    } else if (position == -1) {
+      position = 7;
+      direction = 1;
+    }
+    it[position] = ESPColor(${red}, ${green}, ${blue});
+    it[position - 7 * direction] = current_color;
+    id(${postion_id}) = position + direction;
+    id(${direction_id}) = direction;

@@ -1,0 +1,66 @@
+# This template package defines a pit section LED setup
+# https://esphome.io/components/packages.html
+
+# vars
+# name - the name to give the esphome project
+# friendly_name - the more human readable name for the project
+# board - the specific esp32 board used
+# team_number - the number of the team
+# team_color_rgb - the RGB color of the team
+# led_type - the type of led being used
+# led_count - the number of leds per strip
+# led_order - the order of the leds
+
+# These are packages that define how to setup the device
+# https://esphome.io/components/packages.html
+packages:
+  # This sets up the basic configurations for the device
+  base_device: !include
+    file: base_device.yaml
+    vars:
+      name: ${name}
+      friendly_name: ${friendly_name}
+      board: ${board}
+  # This sets up how the button on the pit led controller should act whne pressed
+  led_demo_button: !include
+    file: led_demo_button.yaml
+    vars:
+      id: demo_button
+      team_number: ${team_number}
+  # This sets up the LED Strip on the upperside of the Pit
+  led_strip_upper: !include
+    file: led_strip.yaml
+    vars:
+      id: Pit_Upper
+      variant: ${led_type}
+      pin: GPIO16
+      num_leds: ${led_count}
+      type: ${led_order}
+  # This sets up the LED Strip on the lowerside of the Pit
+  led_strip_lower: !include
+    file: led_strip.yaml
+    vars:
+      id: Pit_Lower
+      variant: ${led_type}
+      pin: GPIO2
+      num_leds: ${led_count}
+      type: ${led_order}
+  # This holds the helper scripts to control the LED Strips
+  led_scripts: !include
+    file: led_scripts.yaml
+    vars:
+      team_number: ${team_number}
+      team_color_rgb: ${team_color_rgb}
+  # This holds the bluetooth server configurations
+  ble_server: !include 
+    file: led_ble_server.yaml
+    vars:
+      team_number: ${team_number}
+
+# This is the WIFI setup that actually turns off WIFI
+# https://esphome.io/components/wifi.html
+wifi:
+  reboot_timeout: 0s
+  enable_on_boot: False
+  ap:
+    password: !secret ap_pass

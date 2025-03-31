@@ -1,0 +1,31 @@
+# This is a template package that defines an ADC sensor such as a variable resistor that runs a script
+# https://esphome.io/components/packages.html
+
+# vars
+# pin - this is the pin that will be read connected to the ADC component output
+# color - the color that is represented by the ADC as well as part of the script name patterned by set_${color}
+
+# This is used to define the sesnors
+# https://esphome.io/components/sensor/
+sensor:
+# https://esphome.io/components/sensor/adc.html
+  - platform: adc
+    pin: ${pin}
+    name: ${color}_adjust
+    update_interval: 100ms
+    attenuation: auto
+    filters:
+      - lambda: return (x - 0.075)/(3.13252 - 0.075)*255;
+      - clamp:
+          min_value: 0
+          max_value: 255
+          ignore_out_of_range: true
+      - sliding_window_moving_average:
+          window_size: 5
+          send_every: 1
+      - round: 0
+      - delta: 10
+    on_value:
+      - script.execute:
+          id: set_${color}
+          value: !lambda return (byte)x;

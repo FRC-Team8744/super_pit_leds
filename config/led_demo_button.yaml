@@ -1,0 +1,47 @@
+# This is a template package that controls how the button on the led controller work
+# https://esphome.io/components/packages.html
+
+# vars
+# id - The id associated with the button
+# team_number - the number of the team
+
+# This is where global variables are defined for this template
+# https://esphome.io/components/globals.html
+globals:
+  # This is the a pointer to where it's at in the sequence
+  - id: "color_sequence"
+    type: int
+    initial_value: '0'
+
+# These are scripts to help simplifly cycling through the sequence
+#  https://esphome.io/components/script.html
+script:
+  # This is used to execute the next sequence
+  - id: "color_cycle"
+    then:
+      - lambda: |-
+          int sequence = (id(color_sequence) + 1) % 5;
+          if (sequence == 1) {
+            id(color_blue_${team_number}).execute();
+          } else if(sequence == 2) {
+            id(color_white).execute();
+          } else if(sequence == 3) {
+            id(color_blue).execute();
+          } else if(sequence == 4) {
+            id(color_red).execute();
+          } else {
+            id(color_off).execute();
+          }
+          id(color_sequence) = sequence;
+
+# This is a type of sensor that only has two states, on and off
+# https://esphome.io/components/binary_sensor/
+binary_sensor:
+  # This defines the button on the led controller
+  # https://esphome.io/components/binary_sensor/gpio
+  - platform: gpio
+    id: ${id}
+    pin: GPIO0
+    on_release: 
+      then:
+        - script.execute: color_cycle

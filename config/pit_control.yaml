@@ -1,0 +1,101 @@
+# This defines the Pit Control device
+
+# These are packages that define how to setup the device
+# https://esphome.io/components/packages.html
+packages:
+  # This brings in global variables
+  subs: !include
+    file: substitutions.yaml
+  # This sets up the basic configurations for the device
+  base_device: !include
+    file: base_device.yaml
+    vars:
+      name: pit_control
+      friendly_name: Pit Control
+      board: nodemcu-32s
+  # This sets up the bluetooth configurations for communicationg to the Pit LEDs
+  led_ble_client: !include
+    file: led_ble_client.yaml
+    vars:
+      team_number: ${team_number}
+  # This sets up the configurations for the red adjustment dial
+  red_dial: !include
+    file: dial.yaml
+    vars:
+      color: red
+      pin: GPIO32
+  # This sets up the configurations for the green adjustment dial
+  green_dial: !include
+    file: dial.yaml
+    vars:
+      color: green
+      pin: GPIO35
+  # This sets up the configurations for the blue adjustment dial
+  blue_dial: !include
+    file: dial.yaml
+    vars:
+      color: blue
+      pin: GPIO34
+  # This sets up the configurations for the brightness adjustment dial
+  brightness_dial: !include
+    file: dial.yaml
+    vars:
+      color: brightness
+      pin: GPIO33
+  # This sets up the configurations for a button to change the color to ${team_number} blue color
+  blue_${team_number}_button: !include
+    file: button.yaml
+    vars:
+      script_id: blue_${team_number}
+      pin: GPIO26
+  # This sets up the configurations for a button to change the color to white color
+  white_button: !include
+    file: button.yaml
+    vars:
+      script_id: white
+      pin: GPIO27
+  # This sets up the configurations for a button to run the blue alliance sequece
+  blue_button: !include
+    file: button.yaml
+    vars:
+      script_id: blue
+      pin: GPIO12
+  # This sets up the configurations for a button to run the red alliance sequece
+  red_button: !include
+    file: button.yaml
+    vars:
+      script_id: red
+      pin: GPIO25
+  # This sets up the configurations for a button to turn off the LED Strips
+  off_button: !include
+    file: button.yaml
+    vars:
+      script_id: turn_off
+      pin: GPIO13
+
+# This is the WIFI setup that actually turns off WIFI
+# https://esphome.io/components/wifi.html
+wifi:
+  reboot_timeout: 0s
+  enable_on_boot: False
+  ap:
+    password: !secret ap_pass
+
+# This is a type of sensor that only has two states, on and off
+# https://esphome.io/components/binary_sensor/
+binary_sensor:
+  # https://esphome.io/components/binary_sensor/gpio
+  # This is for the Pit Control Web to initiate the red alliance sequence
+  - platform: gpio
+    id: wifi_red_button
+    pin: GPIO15
+    on_press: 
+      then:
+        - script.execute: red
+  # This is for the Pit Control WEb to initiate the blue alliance sequence
+  - platform: gpio
+    id: wifi_blue_button
+    pin: GPIO2
+    on_press: 
+      then:
+        - script.execute: blue

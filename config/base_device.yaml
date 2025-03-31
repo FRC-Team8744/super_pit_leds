@@ -1,0 +1,24 @@
+# this is a template package that is intended to hold the bas components to start an esphome project
+# https://esphome.io/components/packages.html
+
+# vars
+# name - the name to give the esphome project
+# friendly_name - the more human readable name for the project
+# board - the specific esp32 board used
+
+# This is the basic setup for an esphome project.
+# https://esphome.io/components/esphome
+esphome:
+  name: ${name}
+  friendly_name: ${friendly_name}
+
+# This defines the ESP32 board being used.
+# https://esphome.io/components/esp32
+esp32:
+  board: ${board}
+  framework:
+    type: arduino
+
+# This allows for information to be logged to the serial out
+# https://esphome.io/components/logger
+logger:

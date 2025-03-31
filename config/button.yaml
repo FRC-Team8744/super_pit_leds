@@ -1,0 +1,23 @@
+# This is a template package that defines a button that runs a script
+# https://esphome.io/components/packages.html
+
+# vars
+# script_id - id of the script that will ran when the button is released
+# pin - the pin that will be monitored
+
+# This is a type of sensor that only has two states, on and off
+# https://esphome.io/components/binary_sensor/
+binary_sensor:
+  # https://esphome.io/components/binary_sensor/gpio
+  # This is the template for a button to run a script
+  - platform: gpio
+    id: ${script_id}_button
+    pin: 
+      number: ${pin}
+      inverted: true
+      mode:
+        input: true
+        pullup: true
+    on_release: 
+      then:
+        - script.execute: ${script_id}

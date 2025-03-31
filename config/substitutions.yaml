@@ -1,0 +1,12 @@
+# This file is used for constances through out the system.
+
+# These are replacement names in this file
+# https://esphome.io/components/substitutions
+substitutions:
+  # This is the team number
+  team_number: '8744'
+  team_color_rgb: '53, 67, 169'
+  default_event_id: '2025wila'
+  led_type: 'ws2811'
+  led_count: '42'
+  led_order: 'RGB'

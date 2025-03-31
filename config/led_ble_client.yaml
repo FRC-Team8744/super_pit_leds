@@ -1,0 +1,149 @@
+# This is a template package to define the bluetooth connections to the lights
+# This was broken out more for grouping reasons that reusablility
+# https://esphome.io/components/packages.html
+
+# vars
+# team_number - The number of the team used for the color name
+
+# This is required to run the ble_client
+# https://esphome.io/components/esp32_ble_tracker.html
+esp32_ble_tracker:
+
+# This is used to connect to the bluetooth light strips
+# https://esphome.io/components/ble_client.html
+ble_client:
+  - mac_address: 3C:8A:1F:05:D7:96
+    id: "pit1"
+    auto_connect: true
+  - mac_address: 3C:8A:1F:04:B6:0A
+    id: "pit2"
+    auto_connect: true
+
+# These are scripts to help simplifly calling the LED Strips
+#  https://esphome.io/components/script.html
+script:
+# This script is used to set the red color value on the LED Strips
+  - id: set_red
+    parameters:
+      value: byte
+    then:
+      - ble_client.ble_write:
+          id: pit1
+          service_uuid: 2a24b789-7aab-4535-af3e-ee76a35cc42d
+          characteristic_uuid: cad48e28-7fbe-41cf-bae9-d77a6c233423
+          value: !lambda return {value};
+      - ble_client.ble_write:
+          id: pit2
+          service_uuid: 2a24b789-7aab-4535-af3e-ee76a35cc42d
+          characteristic_uuid: cad48e28-7fbe-41cf-bae9-d77a6c233423
+          value: !lambda return {value};
+  # This script is used to set the green color value on the LED Strips
+  - id: set_green
+    parameters:
+      value: byte
+    then:
+      - ble_client.ble_write:
+          id: pit1
+          service_uuid: 2a24b789-7aab-4535-af3e-ee76a35cc42d
+          characteristic_uuid: cad48e28-7fbe-41cf-bae9-d77a6c233424
+          value: !lambda return {value};
+      - ble_client.ble_write:
+          id: pit2
+          service_uuid: 2a24b789-7aab-4535-af3e-ee76a35cc42d
+          characteristic_uuid: cad48e28-7fbe-41cf-bae9-d77a6c233424
+          value: !lambda return {value};
+  # This script is used to set the blue color value on the LED Strips
+  - id: set_blue
+    parameters:
+      value: byte
+    then:
+      - ble_client.ble_write:
+          id: pit1
+          service_uuid: 2a24b789-7aab-4535-af3e-ee76a35cc42d
+          characteristic_uuid: cad48e28-7fbe-41cf-bae9-d77a6c233425
+          value: !lambda return {value};
+      - ble_client.ble_write:
+          id: pit2
+          service_uuid: 2a24b789-7aab-4535-af3e-ee76a35cc42d
+          characteristic_uuid: cad48e28-7fbe-41cf-bae9-d77a6c233425
+          value: !lambda return {value};
+  # This script is used to set the brightness value on the LED Strips
+  - id: set_brightness
+    parameters:
+      value: byte
+    then:
+      - ble_client.ble_write:
+          id: pit1
+          service_uuid: 2a24b789-7aab-4535-af3e-ee76a35cc42d
+          characteristic_uuid: cad48e28-7fbe-41cf-bae9-d77a6c233426
+          value: !lambda return {value};
+      - ble_client.ble_write:
+          id: pit1
+          service_uuid: 2a24b789-7aab-4535-af3e-ee76a35cc42d
+          characteristic_uuid: cad48e28-7fbe-41cf-bae9-d77a6c233426
+          value: !lambda return {value};
+  # This script is to turn off the LED Strips
+  - id: turn_off
+    then:
+      - ble_client.ble_write:
+          id: pit1
+          service_uuid: 2a24b789-7aab-4535-af3e-ee76a35cc42d
+          characteristic_uuid: cad48e28-7fbe-41cf-bae9-d77a6c233427
+          value: "0"
+      - ble_client.ble_write:
+          id: pit2
+          service_uuid: 2a24b789-7aab-4535-af3e-ee76a35cc42d
+          characteristic_uuid: cad48e28-7fbe-41cf-bae9-d77a6c233427
+          value: "0"
+  # This script is to change the LED Strips white
+  - id: white
+    then:
+      - ble_client.ble_write:
+          id: pit1
+          service_uuid: 2a24b789-7aab-4535-af3e-ee76a35cc42d
+          characteristic_uuid: cad48e28-7fbe-41cf-bae9-d77a6c233428
+          value: "0"
+      - ble_client.ble_write:
+          id: pit2
+          service_uuid: 2a24b789-7aab-4535-af3e-ee76a35cc42d
+          characteristic_uuid: cad48e28-7fbe-41cf-bae9-d77a6c233428
+          value: "0"
+  # This script is to change the LED Strips to ${team_number} blue
+  - id: blue_${team_number}
+    then:
+      - ble_client.ble_write:
+          id: pit1
+          service_uuid: 2a24b789-7aab-4535-af3e-ee76a35cc42d
+          characteristic_uuid: cad48e28-7fbe-41cf-bae9-d77a6c233429
+          value: "0"
+      - ble_client.ble_write:
+          id: pit2
+          service_uuid: 2a24b789-7aab-4535-af3e-ee76a35cc42d
+          characteristic_uuid: cad48e28-7fbe-41cf-bae9-d77a6c233429
+          value: "0"
+  # This script is used to activate the blue alliance sequence
+  - id: blue
+    then:
+      - ble_client.ble_write:
+          id: pit1
+          service_uuid: 2a24b789-7aab-4535-af3e-ee76a35cc42d
+          characteristic_uuid: cad48e28-7fbe-41cf-bae9-d77a6c233430
+          value: "0"
+      - ble_client.ble_write:
+          id: pit2
+          service_uuid: 2a24b789-7aab-4535-af3e-ee76a35cc42d
+          characteristic_uuid: cad48e28-7fbe-41cf-bae9-d77a6c233430
+          value: "0"
+  # This script is used to activate the red alliance sequence
+  - id: red
+    then:
+      - ble_client.ble_write:
+          id: pit1
+          service_uuid: 2a24b789-7aab-4535-af3e-ee76a35cc42d
+          characteristic_uuid: cad48e28-7fbe-41cf-bae9-d77a6c233431
+          value: "0"
+      - ble_client.ble_write:
+          id: pit2
+          service_uuid: 2a24b789-7aab-4535-af3e-ee76a35cc42d
+          characteristic_uuid: cad48e28-7fbe-41cf-bae9-d77a6c233431
+          value: "0"
